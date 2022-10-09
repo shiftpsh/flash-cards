@@ -1,17 +1,17 @@
 import { css, Global, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Button, Card, Space, Typo } from "@solved-ac/ui-react";
-import axios from "axios";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   IoChatbubbleEllipsesOutline,
-  IoCheckmarkCircleOutline
+  IoCheckmarkCircleOutline,
+  IoStar,
+  IoStarOutline
 } from "react-icons/io5";
-import tsv from "tsv";
+import { useStore } from "../contexts/StoreContext";
 import { useGranularEffect } from "../hooks/useGranularEffect";
 import { Word } from "../types/word";
-import { shuffle } from "../utils/shuffle";
 
 const Fullscreen = styled(motion.div)`
   position: absolute;
@@ -26,6 +26,7 @@ const Fullscreen = styled(motion.div)`
 `;
 
 const Flashcard = styled(motion(Card))`
+  position: relative;
   width: 20em;
   max-width: 100%;
   max-height: 100%;
@@ -85,31 +86,25 @@ const MeaningWrapper = styled(motion.span)`
   font-weight: 700;
 `;
 
-const Flashcards = () => {
+interface Props {
+  words: Word[];
+  onShuffle: () => void;
+}
+
+const Flashcards = (props: Props) => {
+  const store = useStore();
   const theme = useTheme();
 
-  const [words, setWords] = useState<Word[]>([]);
+  const { words, onShuffle } = props;
+
   const [index, setIndex] = useState<number>(0);
   const [open, setOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    axios
-      .get("./words-a1.tsv")
-      .then((res) => {
-        const words = res.data;
-        const shuffled = shuffle(
-          (tsv.parse(words) as Word[]).filter((s) => s.word.length)
-        );
-        setWords(shuffled);
-        console.log(shuffled);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
-  const { word, furigana, meaning } =
+  const item =
     index < words.length
       ? words[index]
       : { word: "", furigana: "", meaning: "" };
+  const { word, furigana, meaning } = item;
 
   const speak = () => {
     const uttr = new SpeechSynthesisUtterance(word);
@@ -188,6 +183,20 @@ const Flashcards = () => {
                 exit={{ y: "50%", opacity: 0 }}
               >
                 <Flashcard>
+                  <CardActions>
+                    <Button transparent circle>
+                      {store.bookmark.has(word) ? (
+                        <IoStar
+                          onClick={() => store.bookmark.remove(word)}
+                          color={theme.color.status.warn}
+                        />
+                      ) : (
+                        <IoStarOutline
+                          onClick={() => store.bookmark.add(item)}
+                        />
+                      )}
+                    </Button>
+                  </CardActions>
                   <CardContents>
                     <WordWrapper
                       kwy="word"
@@ -227,7 +236,7 @@ const Flashcards = () => {
                         setOpen(false);
                         setIndex((p) => {
                           if (p + 1 < words.length) return p + 1;
-                          setWords((w) => shuffle(w));
+                          onShuffle();
                           return 0;
                         });
                       }}
