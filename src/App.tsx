@@ -24,8 +24,15 @@ const App = () => {
       return loadStore().bookmark;
     }
 
-    const { data } = await axios.get(`./words-${key}.tsv`);
-    return tsv.parse(data) as Word[];
+    const { data } = await axios.get<string>(`./words-${key}.tsv`);
+    const parsedWords = tsv.parse(
+      data
+        .split("\n")
+        .map((x) => x.trim())
+        .filter((x) => x.length)
+        .join("\n")
+    ) as Word[];
+    return parsedWords.filter((x) => x.word.length > 0);
   };
 
   const handleChangeWordset = (key: string) => {
