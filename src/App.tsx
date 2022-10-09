@@ -59,11 +59,11 @@ const App = () => {
             ${emotionReset}
 
             html {
-              font-family: "Pretendard Variable", Pretendard, -apple-system,
-                BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue",
-                "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
-                "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
-                "Segoe UI Symbol", sans-serif;
+              font-family: "Pretendard Variable", "Pretendard JP", Pretendard,
+                -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+                "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+                "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+                "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
               font-size: calc(10px + 0.7vmin);
               letter-spacing: -0.05ch;
             }
