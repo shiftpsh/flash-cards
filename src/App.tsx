@@ -23,6 +23,9 @@ const App = () => {
     if (key === "bookmarks") {
       return loadStore().bookmark;
     }
+    if (key === "wrongLog") {
+      return loadStore().wrongLogs;
+    }
 
     const { data } = await axios.get<string>(`./words-${key}.tsv`);
     const parsedWords = tsv.parse(
@@ -32,7 +35,7 @@ const App = () => {
         .filter((x) => x.length)
         .join("\n")
     ) as Word[];
-    console.log(data)
+    console.log(data);
     return parsedWords.filter((x) => x.word.length > 0);
   };
 
@@ -46,9 +49,13 @@ const App = () => {
   const handleShuffle = () => {
     if (key === "bookmarks") {
       setWords(shuffle(loadStore().bookmark));
-    } else {
-      setWords((w) => shuffle(w));
+      return;
     }
+    if (key === "wrongLog") {
+      setWords(shuffle(loadStore().wrongLogs));
+      return;
+    }
+    setWords((w) => shuffle(w));
   };
 
   return (
@@ -86,6 +93,9 @@ const App = () => {
               clickable
             >
               북마크
+            </ListItem>
+            <ListItem onClick={() => handleChangeWordset("wrongLog")} clickable>
+              틀렸던 단어들
             </ListItem>
             <ListItem onClick={() => handleChangeWordset("1a")} clickable>
               단어 리스트: 1A

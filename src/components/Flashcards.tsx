@@ -7,12 +7,15 @@ import {
   IoArrowBack,
   IoChatbubbleEllipsesOutline,
   IoCheckmarkCircleOutline,
+  IoCloseCircleOutline,
+  IoHelpCircleOutline,
   IoStar,
   IoStarOutline
 } from "react-icons/io5";
 import { useStore } from "../contexts/StoreContext";
 import { useGranularEffect } from "../hooks/useGranularEffect";
 import { Word } from "../types/word";
+import { throwParty } from "../utils/confetti";
 
 const Fullscreen = styled(motion.div)`
   position: absolute;
@@ -61,7 +64,7 @@ const WordWrapper = styled(Typo)`
   width: 100%;
 `;
 
-const MetaWrapper = styled.div`
+const MetaWrapper = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 1em 0;
@@ -113,6 +116,11 @@ const Flashcards = (props: Props) => {
   const bookmarked = useMemo(
     () => store.bookmark.has(word),
     [store.bookmark, word]
+  );
+
+  const wasWrong = useMemo(
+    () => store.wrongLog.has(word),
+    [store.wrongLog, word]
   );
 
   useEffect(() => {
@@ -174,8 +182,9 @@ const Flashcards = (props: Props) => {
                     <Button
                       backgroundColor={theme.color.status.success}
                       onClick={() => setOpen(true)}
+                      style={{ minWidth: "6em", fontSize: "1.5em" }}
                     >
-                      <IoCheckmarkCircleOutline />
+                      <IoHelpCircleOutline />
                     </Button>
                   </CardActions>
                 </Flashcard>
@@ -245,28 +254,87 @@ const Flashcards = (props: Props) => {
                       {word}
                     </WordWrapper>
                     <Space h="2em" />
-                    <MotionConfig transition={{ duration: 0.6 }}>
+                    <MotionConfig
+                      transition={{ duration: 0.6, delayChildren: 0.2 }}
+                    >
                       <MetaWrapper>
                         <FuriganaWrapper
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
+                          transition={{ delay: 0.2 }}
                         >
-                          {furigana}
+                          <span
+                            style={{
+                              fontSize: `${Math.min(1, 8 / furigana.length)}em`,
+                            }}
+                          >
+                            {furigana}
+                          </span>
+                          <Space w={8} />
+                          <Button
+                            transparent
+                            circle
+                            onClick={() => {
+                              speak();
+                            }}
+                          >
+                            <IoChatbubbleEllipsesOutline
+                              color={theme.color.text.secondary.main}
+                            />
+                          </Button>
                         </FuriganaWrapper>
                         <MeaningWrapper
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3 }}
                         >
                           {meaning}
                         </MeaningWrapper>
+                        {wasWrong && (
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                          >
+                            <Typo description>틀렸던 단어</Typo>
+                          </motion.span>
+                        )}
                       </MetaWrapper>
                     </MotionConfig>
                   </CardContents>
                   <CardActions>
                     <Button
+                      style={{ minWidth: "3em", fontSize: "1.5em" }}
+                      backgroundColor={theme.color.status.error}
+                      onClick={() => {
+                        setOpen(false);
+                        word.length && store.wrongLog.add(item);
+                        setIndex((p) => {
+                          if (p + 1 < words.length) return p + 1;
+                          onShuffle();
+                          return 0;
+                        });
+                      }}
+                    >
+                      <IoCloseCircleOutline />
+                    </Button>
+                    <Button
+                      style={{ minWidth: "3em", fontSize: "1.5em" }}
                       backgroundColor={theme.color.status.success}
                       onClick={() => {
                         setOpen(false);
+                        if (wasWrong) {
+                          throwParty({
+                            colors: [
+                              "#4DCFD6",
+                              "#2CC1E0",
+                              "#0090C9",
+                              "#9BC3DE",
+                              "#478CD6",
+                            ],
+                          });
+                          store.wrongLog.remove(word);
+                        }
                         setIndex((p) => {
                           if (p + 1 < words.length) return p + 1;
                           onShuffle();
@@ -275,14 +343,6 @@ const Flashcards = (props: Props) => {
                       }}
                     >
                       <IoCheckmarkCircleOutline />
-                    </Button>
-                    <Button
-                      backgroundColor={theme.color.status.warn}
-                      onClick={() => {
-                        speak();
-                      }}
-                    >
-                      <IoChatbubbleEllipsesOutline />
                     </Button>
                   </CardActions>
                 </Flashcard>

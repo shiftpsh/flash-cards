@@ -31,9 +31,28 @@ const StoreV1 = StoreBase.extend({
   ),
 });
 
+const StoreV2 = StoreBase.extend({
+  version: Literal(2),
+  bookmark: ArrayType(
+    Record({
+      word: StringType,
+      furigana: StringType,
+      meaning: StringType,
+    })
+  ),
+  wrongLogs: ArrayType(
+    Record({
+      word: StringType,
+      furigana: StringType,
+      meaning: StringType,
+    })
+  ),
+});
+
 export const Store = {
   base: StoreBase,
   1: StoreV1,
+  2: StoreV2,
 };
 
 export const storeDefaults: {
@@ -41,9 +60,10 @@ export const storeDefaults: {
 } = {
   base: { version: 1 },
   1: { version: 1, bookmark: [], logs: [] },
+  2: { version: 2, bookmark: [], wrongLogs: [] },
 };
 
-export const LATEST = 1;
+export const LATEST = 2;
 
 export const saveStore = (store: Static<typeof Store[typeof LATEST]>) => {
   localStorage.setItem("store", JSON.stringify(store));
@@ -55,6 +75,12 @@ export const loadStore = (): Static<typeof Store[typeof LATEST]> => {
     if (store) {
       const parsed = Store.base.check(JSON.parse(store));
       const version = parsed.version;
+      if (version === 1) {
+        const { bookmark } = Store[version].check(parsed);
+        const migrated = { version: 2 as const, bookmark, wrongLogs: [] };
+        saveStore(migrated);
+        return migrated;
+      }
       if (version === LATEST) {
         return Store[LATEST].check(parsed);
       }

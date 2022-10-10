@@ -12,6 +12,11 @@ interface ContextProps {
     remove: (word: string) => void;
     has: (word: string) => boolean;
   };
+  wrongLog: {
+    add: (word: Word) => void;
+    remove: (word: string) => void;
+    has: (word: string) => boolean;
+  };
 }
 
 export const StoreContext = createContext<ContextProps>(
@@ -59,6 +64,26 @@ export const StoreProvider = (props: ProviderProps) => {
     }));
   };
 
+  const hasWrongLog = (word: string) => {
+    return memStore.wrongLogs.find((w) => w.word === word) !== undefined;
+  };
+
+  const addWrongLog = (word: Word) => {
+    if (hasWrongLog(word.word)) return;
+    setStore((prevStore) => ({
+      ...prevStore,
+      wrongLogs: [...prevStore.wrongLogs, word],
+    }));
+  };
+
+  const removeWrongLog = (word: string) => {
+    if (!hasWrongLog(word)) return;
+    setStore((prevStore) => ({
+      ...prevStore,
+      wrongLogs: prevStore.wrongLogs.filter((w) => w.word !== word),
+    }));
+  };
+
   return (
     <StoreContext.Provider
       value={{
@@ -68,6 +93,11 @@ export const StoreProvider = (props: ProviderProps) => {
           add: addBookmark,
           has: hasBookmark,
           remove: removeBookmark,
+        },
+        wrongLog: {
+          add: addWrongLog,
+          has: hasWrongLog,
+          remove: removeWrongLog,
         },
       }}
     >

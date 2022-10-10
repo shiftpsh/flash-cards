@@ -15,6 +15,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "axios": "^1.1.2",
+    "canvas-confetti": "^1.5.1",
     "emotion-reset": "^3.0.1",
     "framer-motion": "^7.5.3",
     "react": "^18.2.0",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/canvas-confetti": "^1.4.3",
     "@types/tsv": "^0.2.1"
   }
 }
