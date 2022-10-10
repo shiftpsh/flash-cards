@@ -54,8 +54,9 @@ const CardContents = styled.div`
 
 const CardActions = styled.div`
   flex: 1 0 0;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   gap: 0 1em;
 `;
@@ -166,6 +167,29 @@ const Flashcards = (props: Props) => {
                 exit={{ rotateY: "90deg" }}
               >
                 <Flashcard>
+                  <CardActions>
+                    <div style={{ flex: "1 0 0" }}>
+                      <Button
+                        transparent
+                        circle
+                        disabled={index === 0}
+                        onClick={() =>
+                          setIndex((p) => {
+                            setOpen(true);
+                            return Math.max(0, p - 1);
+                          })
+                        }
+                      >
+                        <IoArrowBack />
+                      </Button>
+                    </div>
+                    <div style={{ flex: "1 0 0" }}>
+                      <span>
+                        {index + 1} / {words.length}
+                      </span>
+                    </div>
+                    <div style={{ flex: "1 0 0" }} />
+                  </CardActions>
                   <CardContents>
                     <WordWrapper
                       kwy="word"
@@ -205,39 +229,43 @@ const Flashcards = (props: Props) => {
               >
                 <Flashcard>
                   <CardActions>
-                    <Button
-                      transparent
-                      circle
-                      disabled={index === 0}
-                      onClick={() =>
-                        setIndex((p) => {
-                          setOpen(false);
-                          return Math.max(0, p - 1);
-                        })
-                      }
-                    >
-                      <IoArrowBack />
-                    </Button>
-                    <div style={{ flex: "1" }} />
-                    <span>
-                      {index + 1} / {words.length}
-                    </span>
-                    <div style={{ flex: "1" }} />
-                    <Button
-                      transparent
-                      circle
-                      onClick={() =>
-                        bookmarked
-                          ? store.bookmark.remove(word)
-                          : store.bookmark.add(item)
-                      }
-                    >
-                      {bookmarked ? (
-                        <IoStar color={theme.color.status.warn} />
-                      ) : (
-                        <IoStarOutline />
-                      )}
-                    </Button>
+                    <div style={{ flex: "1 0 0" }}>
+                      <Button
+                        transparent
+                        circle
+                        disabled={index === 0}
+                        onClick={() =>
+                          setIndex((p) => {
+                            setOpen(false);
+                            return Math.max(0, p - 1);
+                          })
+                        }
+                      >
+                        <IoArrowBack />
+                      </Button>
+                    </div>
+                    <div style={{ flex: "1 0 0" }}>
+                      <span>
+                        {index + 1} / {words.length}
+                      </span>
+                    </div>
+                    <div style={{ flex: "1 0 0" }}>
+                      <Button
+                        transparent
+                        circle
+                        onClick={() =>
+                          bookmarked
+                            ? store.bookmark.remove(word)
+                            : store.bookmark.add(item)
+                        }
+                      >
+                        {bookmarked ? (
+                          <IoStar color={theme.color.status.warn} />
+                        ) : (
+                          <IoStarOutline />
+                        )}
+                      </Button>
+                    </div>
                   </CardActions>
                   <CardContents>
                     <WordWrapper
