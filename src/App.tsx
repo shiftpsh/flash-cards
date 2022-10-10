@@ -32,6 +32,7 @@ const App = () => {
         .filter((x) => x.length)
         .join("\n")
     ) as Word[];
+    console.log(data)
     return parsedWords.filter((x) => x.word.length > 0);
   };
 
@@ -86,8 +87,11 @@ const App = () => {
             >
               북마크
             </ListItem>
-            <ListItem onClick={() => handleChangeWordset("a1")} clickable>
-              A1
+            <ListItem onClick={() => handleChangeWordset("1a")} clickable>
+              단어 리스트: 1A
+            </ListItem>
+            <ListItem onClick={() => handleChangeWordset("1b")} clickable>
+              단어 리스트: 1B
             </ListItem>
           </List>
         ) : (

@@ -2,7 +2,7 @@ import { css, Global, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Button, Card, Space, Typo } from "@solved-ac/ui-react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   IoChatbubbleEllipsesOutline,
   IoCheckmarkCircleOutline,
@@ -92,6 +92,9 @@ interface Props {
 }
 
 const Flashcards = (props: Props) => {
+  const uttrRef = useRef<SpeechSynthesisUtterance>(
+    new SpeechSynthesisUtterance()
+  );
   const store = useStore();
   const theme = useTheme();
 
@@ -106,12 +109,15 @@ const Flashcards = (props: Props) => {
       : { word: "", furigana: "", meaning: "" };
   const { word, furigana, meaning } = item;
 
-  const speak = () => {
-    const uttr = new SpeechSynthesisUtterance(word);
-    uttr.voice = window.speechSynthesis
+  useEffect(() => {
+    uttrRef.current.voice = window.speechSynthesis
       .getVoices()
       .filter((v) => v.lang.includes("ja"))[0];
-    speechSynthesis.speak(uttr);
+  }, []);
+
+  const speak = () => {
+    uttrRef.current.text = word;
+    speechSynthesis.speak(uttrRef.current);
   };
 
   useGranularEffect(
