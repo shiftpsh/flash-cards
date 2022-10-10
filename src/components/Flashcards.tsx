@@ -2,8 +2,9 @@ import { css, Global, useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Button, Card, Space, Typo } from "@solved-ac/ui-react";
 import { AnimatePresence, motion, MotionConfig } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  IoArrowBack,
   IoChatbubbleEllipsesOutline,
   IoCheckmarkCircleOutline,
   IoStar,
@@ -109,6 +110,11 @@ const Flashcards = (props: Props) => {
       : { word: "", furigana: "", meaning: "" };
   const { word, furigana, meaning } = item;
 
+  const bookmarked = useMemo(
+    () => store.bookmark.has(word),
+    [store.bookmark, word]
+  );
+
   useEffect(() => {
     uttrRef.current.voice = window.speechSynthesis
       .getVoices()
@@ -190,16 +196,37 @@ const Flashcards = (props: Props) => {
               >
                 <Flashcard>
                   <CardActions>
-                    <Button transparent circle>
-                      {store.bookmark.has(word) ? (
-                        <IoStar
-                          onClick={() => store.bookmark.remove(word)}
-                          color={theme.color.status.warn}
-                        />
+                    <Button
+                      transparent
+                      circle
+                      disabled={index === 0}
+                      onClick={() =>
+                        setIndex((p) => {
+                          setOpen(false);
+                          return Math.max(0, p - 1);
+                        })
+                      }
+                    >
+                      <IoArrowBack />
+                    </Button>
+                    <div style={{ flex: "1" }} />
+                    <span>
+                      {index + 1} / {words.length}
+                    </span>
+                    <div style={{ flex: "1" }} />
+                    <Button
+                      transparent
+                      circle
+                      onClick={() =>
+                        bookmarked
+                          ? store.bookmark.remove(word)
+                          : store.bookmark.add(item)
+                      }
+                    >
+                      {bookmarked ? (
+                        <IoStar color={theme.color.status.warn} />
                       ) : (
-                        <IoStarOutline
-                          onClick={() => store.bookmark.add(item)}
-                        />
+                        <IoStarOutline />
                       )}
                     </Button>
                   </CardActions>
