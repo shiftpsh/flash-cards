@@ -101,7 +101,10 @@ const App = () => {
               단어 리스트: 1A
             </ListItem>
             <ListItem onClick={() => handleChangeWordset("s1a")} clickable>
-              문장 리스트: 1A
+              문장 리스트: 1A-1, 2
+            </ListItem>
+            <ListItem onClick={() => handleChangeWordset("s1a2")} clickable>
+              문장 리스트: 1A-3, 5, 6
             </ListItem>
             <ListItem onClick={() => handleChangeWordset("1b")} clickable>
               단어 리스트: 1B
