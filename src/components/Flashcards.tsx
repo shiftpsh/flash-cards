@@ -45,6 +45,7 @@ const Flashcard = styled(motion(Card))`
 `;
 
 const CardContents = styled.div`
+  max-width: 100%;
   flex: 4 0 0;
   display: flex;
   flex-direction: column;
@@ -92,7 +93,7 @@ const MeaningWrapper = styled(motion.span)`
 `;
 
 interface Props {
-  words: Word[];
+  words: Partial<Word[]>;
   onShuffle: () => void;
 }
 
@@ -110,8 +111,8 @@ const Flashcards = (props: Props) => {
 
   const item =
     index < words.length
-      ? words[index]
-      : { word: "", furigana: "", meaning: "" };
+      ? { word: "", meaning: "", furigana: "", ...words[index] }
+      : { word: "", meaning: "", furigana: "" };
   const { word, furigana, meaning } = item;
 
   const bookmarked = useMemo(
@@ -124,13 +125,23 @@ const Flashcards = (props: Props) => {
     [store.wrongLog, word]
   );
 
-  useEffect(() => {
+  const setLanguage = () => {
     uttrRef.current.voice = window.speechSynthesis
       .getVoices()
       .filter((v) => v.lang.includes("ja"))[0];
+  };
+
+  useEffect(() => {
+    setLanguage();
   }, []);
 
+  useEffect(() => {
+    window.speechSynthesis.cancel();
+  }, [index]);
+
   const speak = () => {
+    if (!uttrRef.current) return;
+    if (!uttrRef.current.voice?.lang.includes("ja")) setLanguage();
     uttrRef.current.text = word;
     speechSynthesis.speak(uttrRef.current);
   };
@@ -143,6 +154,24 @@ const Flashcards = (props: Props) => {
     [open],
     [speak]
   );
+
+  const maxLength = useMemo(() => {
+    return Math.max(...words.map((w) => w?.word?.length || 0));
+  }, [words]);
+
+  const wordStyles = {
+    fontSize: `${Math.max(1.25, Math.min(4, 16 / word.length))}em`,
+    wordBreak: "break-all",
+    lineHeight: 1.5,
+    fontWeight: maxLength >= 15 ? 400 : 700,
+  } as const;
+
+  const meaningStyles = {
+    wordBreak: "break-all",
+    lineHeight: 1.5,
+    fontSize: maxLength >= 15 ? "1rem" : "1em",
+    fontWeight: maxLength >= 15 ? 400 : 700,
+  } as const;
 
   return (
     <>
@@ -191,14 +220,7 @@ const Flashcards = (props: Props) => {
                     <div style={{ flex: "1 0 0" }} />
                   </CardActions>
                   <CardContents>
-                    <WordWrapper
-                      kwy="word"
-                      h1
-                      no-margin
-                      style={{
-                        fontSize: `${Math.min(4, 16 / word.length)}em`,
-                      }}
-                    >
+                    <WordWrapper key="word" h1 no-margin style={wordStyles}>
                       {word}
                     </WordWrapper>
                   </CardContents>
@@ -269,12 +291,10 @@ const Flashcards = (props: Props) => {
                   </CardActions>
                   <CardContents>
                     <WordWrapper
-                      kwy="word"
+                      key="word"
                       h1
                       no-margin
-                      style={{
-                        fontSize: `${Math.min(4, 16 / word.length)}em`,
-                      }}
+                      style={wordStyles}
                       transition={{
                         height: { duration: 0.2 },
                       }}
@@ -316,7 +336,7 @@ const Flashcards = (props: Props) => {
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.3 }}
                         >
-                          {meaning}
+                          <span style={meaningStyles}>{meaning}</span>
                         </MeaningWrapper>
                         {wasWrong && (
                           <motion.span
