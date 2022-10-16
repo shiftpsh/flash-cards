@@ -130,6 +130,12 @@ const App = () => {
             <ListItem onClick={() => handleChangeWordset("s1b2")} clickable>
               문장 리스트 (분할): 1B-2
             </ListItem>
+            <ListItem onClick={() => handleChangeWordset("s1c1")} clickable>
+              문장 리스트 (분할): 1C-1
+            </ListItem>
+            <ListItem onClick={() => handleChangeWordset("s1c2")} clickable>
+              문장 리스트 (분할): 1C-2
+            </ListItem>
           </List>
         ) : (
           <Flashcards words={words} onShuffle={handleShuffle} />
