@@ -15,6 +15,30 @@ import { Word } from "./types/word";
 import { shuffle } from "./utils/shuffle";
 import { loadStore } from "./utils/store";
 
+const template = [
+  ["bookmarks", "북마크"],
+  ["wrongLog", "틀렸던 단어들"],
+  ["1a", "단어 리스트: 1A"],
+  ["1a-2", "단어 리스트: 1A 누락"],
+  ["s1a", "문장 리스트: 1A-1, 2"],
+  ["s1a2", "문장 리스트: 1A-3, 5, 6"],
+  ["1b", "문장 리스트: 1B"],
+  ["1b-1", "단어 리스트 (분할): 1B-1"],
+  ["1b-2", "단어 리스트 (분할): 1B-2"],
+  ["1b-3", "단어 리스트 (분할): 1B-3"],
+  ["1b-4", "단어 리스트 (분할): 1B-4"],
+  ["s1b1", "문장 리스트 (분할): 1B-1"],
+  ["s1b2", "문장 리스트 (분할): 1B-2"],
+  ["s1c1", "문장 리스트 (분할): 1C-1"],
+  ["s1c2", "문장 리스트 (분할): 1C-2"],
+  ["g1a", "문법 리스트: 1A"],
+  ["g1a1", "예문 리스트: 1A-1"],
+  ["g1a2", "예문 리스트: 1A-2"],
+  ["g1a3", "예문 리스트: 1A-3"],
+  ["g1b1", "예문 리스트: 1B-1"],
+  ["g1b2", "예문 리스트: 1B-2"],
+];
+
 const App = () => {
   const [key, setKey] = useState<string | null>(null);
   const [words, setWords] = useState<Word[]>([]);
@@ -88,72 +112,11 @@ const App = () => {
         />
         {key === null ? (
           <List>
-            <ListItem
-              onClick={() => handleChangeWordset("bookmarks")}
-              clickable
-            >
-              북마크
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("wrongLog")} clickable>
-              틀렸던 단어들
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1a")} clickable>
-              단어 리스트: 1A
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1a-2")} clickable>
-              단어 리스트: 1A 누락
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("s1a")} clickable>
-              문장 리스트: 1A-1, 2
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("s1a2")} clickable>
-              문장 리스트: 1A-3, 5, 6
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1b")} clickable>
-              단어 리스트: 1B
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1b-1")} clickable>
-              단어 리스트 (분할): 1B-1
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1b-2")} clickable>
-              단어 리스트 (분할): 1B-2
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1b-3")} clickable>
-              단어 리스트 (분할): 1B-3
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("1b-4")} clickable>
-              단어 리스트 (분할): 1B-4
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("s1b1")} clickable>
-              문장 리스트 (분할): 1B-1
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("s1b2")} clickable>
-              문장 리스트 (분할): 1B-2
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("s1c1")} clickable>
-              문장 리스트 (분할): 1C-1
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("s1c2")} clickable>
-              문장 리스트 (분할): 1C-2
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("g1a")} clickable>
-              문법 리스트: 1A
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("g1a1")} clickable>
-              예문 리스트: 1A-1
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("g1a2")} clickable>
-              예문 리스트: 1A-2
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("g1a3")} clickable>
-              예문 리스트: 1A-3
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("g1b1")} clickable>
-              예문 리스트: 1B-1
-            </ListItem>
-            <ListItem onClick={() => handleChangeWordset("g1b2")} clickable>
-              예문 리스트: 1B-2
-            </ListItem>
+            {template.map(([k, v]) => (
+              <ListItem onClick={() => handleChangeWordset(k)} clickable>
+                {v}
+              </ListItem>
+            ))}
           </List>
         ) : (
           <Flashcards words={words} onShuffle={handleShuffle} />
