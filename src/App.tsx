@@ -3,7 +3,7 @@ import {
   List,
   ListItem,
   SolvedGlobalStyles,
-  solvedThemes,
+  solvedThemes
 } from "@solved-ac/ui-react";
 import axios from "axios";
 import emotionReset from "emotion-reset";
@@ -135,6 +135,9 @@ const App = () => {
             </ListItem>
             <ListItem onClick={() => handleChangeWordset("s1c2")} clickable>
               문장 리스트 (분할): 1C-2
+            </ListItem>
+            <ListItem onClick={() => handleChangeWordset("g1a")} clickable>
+              문법 리스트: 1A
             </ListItem>
             <ListItem onClick={() => handleChangeWordset("g1a1")} clickable>
               예문 리스트: 1A-1
