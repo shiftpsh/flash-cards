@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.js": "/flash-cards/static/js/main.eae414fe.js",
+    "main.js": "/flash-cards/static/js/main.6159b5f6.js",
     "static/js/787.28035159.chunk.js": "/flash-cards/static/js/787.28035159.chunk.js",
     "index.html": "/flash-cards/index.html",
-    "main.eae414fe.js.map": "/flash-cards/static/js/main.eae414fe.js.map",
+    "main.6159b5f6.js.map": "/flash-cards/static/js/main.6159b5f6.js.map",
     "787.28035159.chunk.js.map": "/flash-cards/static/js/787.28035159.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.eae414fe.js"
+    "static/js/main.6159b5f6.js"
   ]
 }
