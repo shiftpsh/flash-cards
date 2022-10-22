@@ -8,13 +8,17 @@ interface ContextProps {
   store: LatestStore;
   setStore: (value: SetStateAction<LatestStore>) => void;
   bookmark: {
-    add: (word: Word) => void;
+    list: Word[];
+    add: (word: Word | Word[]) => void;
     remove: (word: string) => void;
+    removeAll: () => void;
     has: (word: string) => boolean;
   };
   wrongLog: {
-    add: (word: Word) => void;
+    list: Word[];
+    add: (word: Word | Word[]) => void;
     remove: (word: string) => void;
+    removeAll: () => void;
     has: (word: string) => boolean;
   };
 }
@@ -48,11 +52,12 @@ export const StoreProvider = (props: ProviderProps) => {
     return memStore.bookmark.find((w) => w.word === word) !== undefined;
   };
 
-  const addBookmark = (word: Word) => {
-    if (hasBookmark(word.word)) return;
+  const addBookmark = (word: Word | Word[]) => {
+    const words = Array.isArray(word) ? word : [word];
+    const notInBookmarks = words.filter((w) => !hasBookmark(w.word));
     setStore((prevStore) => ({
       ...prevStore,
-      bookmark: [...prevStore.bookmark, word],
+      bookmark: [...prevStore.bookmark, ...notInBookmarks],
     }));
   };
 
@@ -64,15 +69,23 @@ export const StoreProvider = (props: ProviderProps) => {
     }));
   };
 
+  const removeAllBookmarks = () => {
+    setStore((prevStore) => ({
+      ...prevStore,
+      bookmark: [],
+    }));
+  };
+
   const hasWrongLog = (word: string) => {
     return memStore.wrongLogs.find((w) => w.word === word) !== undefined;
   };
 
-  const addWrongLog = (word: Word) => {
-    if (hasWrongLog(word.word)) return;
+  const addWrongLog = (word: Word | Word[]) => {
+    const words = Array.isArray(word) ? word : [word];
+    const notInWrongLogs = words.filter((w) => !hasWrongLog(w.word));
     setStore((prevStore) => ({
       ...prevStore,
-      wrongLogs: [...prevStore.wrongLogs, word],
+      wrongLogs: [...prevStore.wrongLogs, ...notInWrongLogs],
     }));
   };
 
@@ -84,20 +97,31 @@ export const StoreProvider = (props: ProviderProps) => {
     }));
   };
 
+  const removeAllWrongLogs = () => {
+    setStore((prevStore) => ({
+      ...prevStore,
+      wrongLogs: [],
+    }));
+  };
+
   return (
     <StoreContext.Provider
       value={{
         store: memStore,
         setStore,
         bookmark: {
+          list: memStore.bookmark,
           add: addBookmark,
           has: hasBookmark,
           remove: removeBookmark,
+          removeAll: removeAllBookmarks,
         },
         wrongLog: {
+          list: memStore.wrongLogs,
           add: addWrongLog,
           has: hasWrongLog,
           remove: removeWrongLog,
+          removeAll: removeAllWrongLogs,
         },
       }}
     >

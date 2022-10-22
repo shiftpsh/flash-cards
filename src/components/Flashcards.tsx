@@ -29,6 +29,19 @@ const Fullscreen = styled(motion.div)`
   perspective: 1000px;
 `;
 
+const TopBar = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: 1em;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1;
+`;
+
 const Flashcard = styled(motion(Card))`
   position: relative;
   width: 20em;
@@ -187,6 +200,20 @@ const Flashcards = (props: Props) => {
               }
             `}
           />
+          <TopBar>
+            <Button transparent circle onClick={() => window.location.reload()}>
+              <Typo
+                description
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5em",
+                }}
+              >
+                <IoArrowBack /> 돌아가기
+              </Typo>
+            </Button>
+          </TopBar>
           <AnimatePresence mode="wait">
             {!open && (
               <Fullscreen
